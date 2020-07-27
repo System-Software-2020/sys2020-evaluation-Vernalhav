@@ -8,8 +8,8 @@
         global write
         
         section .data
-        p1 db 0x48, 0x65, 0x6c
-        p2 db 0x6c, 0x6f, 0xa
+        p1 db 0x48, 0x65, 0x6c  ;; 'H', 'e', 'l'
+        p2 db 0x6c, 0x6f, 0xa   ;; 'l', 'o', '\n'
 	
         section .text
 
@@ -20,26 +20,34 @@ _start:
         int 0x80                
 
 main:
-        push ebp                
+        ;; Prologue: saving stack pointer
+        push ebp            
         mov ebp, esp
+
         push 6                 
         push p1
         push 1
         call write
-        add esp, 8
+        add esp, 12
         mov eax, 0              
+
+        ;; Epilogue: returning stack pointer and backup pointer
         mov esp, ebp            
         pop ebp
         ret                  
 
 write:
+        ;; Prologue: saving stack pointer
         push ebp                
         mov ebp, esp
+        
         mov ebx, [esp+8]                 
         mov ecx, [esp+12]                 
         mov edx, [esp+16]                 
         mov eax, 4              
         int 0x80                
+        
+        ;; Epilogue: returning stack pointer and backup pointer
         mov esp, ebp            
         pop ebp
         ret
