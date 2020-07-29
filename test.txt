@@ -1,0 +1,22 @@
+O programa imprime "Hello\n" na tela.
+
+_start
+
+É definido pela ABI que o ponto de entrada será a função _start, e o linker segue essa convenção.
+
+A seção de dados armazena as variáveis globais inicializadas. As strings p1 e p2 foram armazenadas nessa seção porque o programador deciciu deixá-las globais e inicializadas pela diretiva db (define bytes).
+
+Nesse caso, a função _start (o ponto de entrada) somente chama a main e retorna 1 para o processo pai. Em geral, a _start pode preparar alguns aspectos do ambiente de execução (por exemplo o tamanho da pilha) e retornar para o processo pai o valor retornado pela função main.
+
+As linhas correspondem ao prólogo e epílogo, cuja função é armazenar corretamente os valores do stack pointer e backup pointer antes da execução da função para que possa, ao final da função, retornar ao estado inicial e preservar a pilha de retorno (através do pop no ponteiro ebp).
+
+No caso da função write, é possível omitir essas linhas porque é uma função folha; ou seja, não chama nenhuma outra função. Como nenhuma outra função é chamada, não é necessário fazer backup do stack pointer no registrador ebp.
+
+C declarations, já que a função chamadora (main) "limpa" a pilha (add esp, 8) após a chamada de write.
+
+A linha add esp, 8 deveria ser add esp, 12 porque a função write recebeu 3 argumentos de 4 bytes cada.
+
+add esp, 12
+
+Não, já que não preserva o valor do registrador EBX.
+
