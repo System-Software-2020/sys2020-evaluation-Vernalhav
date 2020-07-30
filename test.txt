@@ -20,7 +20,12 @@ add esp, 12
 
 Não, já que não preserva o valor do registrador EBX.
 
-O binário provindo do .asm não utiliza nenhuma biblioteca linkada dinamicamente, então o tipo do arquivo é diferente do binário provindo do .c, já que esse necessita chamar a função write que está linkada dinamicamente.
+O binário provindo do .asm não utiliza nenhuma biblioteca linkada dinamicamente, então o tipo do arquivo é diferente do binário provindo do .c, já que esse necessita chamar a função write que está linkada dinamicamente na biblioteca <unistd.h>.
 
 Ela chama o endereço 0x804902b, correspondente à função write implementada no .asm.
 
+Ela chama o endereço 0x11cb (o endereço seguinte). A tabela global de offsets indica que o endereço 0x11cb deverá ser substituido pelo endereço do símbolo "write", que está na GLIBC. Quando o programa é carregado, a syscall exec chama o loader dinâmico para substituir esses símbolos pelos valores corretos logo antes da execução.
+
+Ela chama o endereço 0x1050 (função write@plt) depois de fazer o procedimento para ler o valor do instruction pointer no registrador EBX. A função write@plt, da primeira vez que é chamada, chama o linker dinâmico, que substitui na tabela global de offsets do programa "cliente" o offset correto da função chamada (nesse caso a write). As próximas vezes que write@plt for chamada, ela irá dar jump para o offset correto da função.
+
+O código independente de posição possui mais versatilidade já que diversos programas podem executar as funções disponibilizadas pela lib sem que ela tenha que ser carregada na memória diversas vezes (somente uma cópia parcial é criada, a tabela global de símbolos da lib). O código relocável, por outro lado, é mais eficiente em sua execução (e mais lento em seu carregamento), já que não realiza os procedimentos redundantes (necessários para ter a independência de posição) e acessa diretamente o endereço, já que esses endereços são substituídos em tempo de load.

@@ -1,6 +1,4 @@
-
-
-void write(int fd, char *string, int len);
+#include <unistd.h>
 
 
 int main(){
