@@ -20,3 +20,7 @@ add esp, 12
 
 Não, já que não preserva o valor do registrador EBX.
 
+O binário provindo do .asm não utiliza nenhuma biblioteca linkada dinamicamente, então o tipo do arquivo é diferente do binário provindo do .c, já que esse necessita chamar a função write que está linkada dinamicamente.
+
+Ela chama o endereço 0x804902b, correspondente à função write implementada no .asm.
+

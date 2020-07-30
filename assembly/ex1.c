@@ -8,8 +8,10 @@ int main(){
     return 0;
 }
 
+/*
 void _start(){
     main();
     __asm__("mov $1, %eax");
     __asm__("int $0x80");
 }
+*/
