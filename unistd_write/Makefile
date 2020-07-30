@@ -1,6 +1,6 @@
 
 CFLAGS = -O0 -fcf-protection=none -m32
-C_FLAGS = 
+
 
 # Relocatable code
 ex1-c: ex1.o
